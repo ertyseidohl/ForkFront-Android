@@ -7,20 +7,20 @@ version = '1.2'
 int versionId = 1200;
 
 android {
-
-  compileSdkVersion 30
+  namespace 'com.tbd.forkfront'
+  compileSdkVersion 34
   buildToolsVersion '30.0.3'
 
   defaultConfig {
-    minSdkVersion 7
-    targetSdkVersion 30
+    minSdkVersion 21
+    targetSdkVersion 34
     versionName version
     versionCode versionId
   }
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_7
-    targetCompatibility JavaVersion.VERSION_1_7
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
   sourceSets {

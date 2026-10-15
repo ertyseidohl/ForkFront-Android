@@ -81,30 +81,19 @@ public class ForkFront extends Activity
 
 		setContentView(R.layout.mainwindow);
 
-		ensureReadWritePermissions(new RequestExternalStorageResult() {
-			@Override
-			public void onGranted() {
-				goodToGo();
-			}
-
-			@Override
-			public void onDenied() {
-				finish();
-			}
-		});
+		goodToGo();
 	}
 
 	private void goodToGo() {
-		if(nhState == null)
-		{
+		if (nhState == null) {
 			ByteDecoder decoder;
-			if(getResources().getBoolean(R.bool.useCP437Decoder))
+			if (getResources().getBoolean(R.bool.useCP437Decoder))
 				decoder = new CP437();
 			else
 				decoder = new ByteDecoder() {
 					@Override
 					public char decode(int b) {
-						return (char)b;
+						return (char) b;
 					}
 
 					@Override
@@ -114,57 +103,10 @@ public class ForkFront extends Activity
 				};
 
 			nhState = new NH_State(this, decoder);
-			new UpdateAssets(this, onAssetsReady).execute((Void[])null);
-		}
-		else
-		{
+			new UpdateAssets(this, onAssetsReady).execute((Void[]) null);
+		} else {
 			Log.print("restoring state");
 			nhState.setContext(this);
-		}
-	}
-
-	@TargetApi(Build.VERSION_CODES.M)
-	public void ensureReadWritePermissions(final RequestExternalStorageResult requestExternalStorageResult)
-	{
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-		{
-			if(checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-			{
-				if(mRequestExternalStorageResult == null)
-				{
-					mRequestExternalStorageResult = requestExternalStorageResult;
-					requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
-				}
-				else
-				{
-					// Chain callbacks if several requests are activated in parallel. This shouldn't happen though.
-					final RequestExternalStorageResult prevRequest = mRequestExternalStorageResult;
-					mRequestExternalStorageResult = new RequestExternalStorageResult()
-					{
-						@Override
-						public void onGranted()
-						{
-							prevRequest.onGranted();
-							requestExternalStorageResult.onGranted();
-						}
-
-						@Override
-						public void onDenied()
-						{
-							prevRequest.onDenied();
-							requestExternalStorageResult.onDenied();
-						}
-					};
-				}
-			}
-			else
-			{
-				requestExternalStorageResult.onGranted();
-			}
-		}
-		else
-		{
-			requestExternalStorageResult.onGranted();
 		}
 	}
 
